@@ -9,13 +9,13 @@ flavors = ["Mango","Cola","Blue Raspberry","Strawberry","Grape","Lemon","Waterme
 toppings = ["Boba","Jelly","Ice Cream","Whipped Crea","Sprinkles"]
 
 color_map = {
-    "Mango": #fbbf24,
-    "Cola": #7c2d12
-    "Blue Raspberry": #3b82f6,
-    "Strawberry": #ef4444,
-    "Grape": #8b5cf6,
-    "Lemon": #eab308,
-    "Watermelon": #22c55e
+    "Mango": "#fbbf24",
+    "Cola": "#7c2d12",
+    "Blue Raspberry": "#3b82f6",
+    "Strawberry": "#ef4444",
+    "Grape": "#8b5cf6",
+    "Lemon": "#eab308",
+    "Watermelon": "#22c55e"
 }
 
 @app.route("/")
@@ -67,6 +67,34 @@ def roulette():
     }
 
     return render_template("slushie.html", s=slushie)
+
+@app.route("/today")
+def today():
+    random.seed(str(datetime.date.today()))
+    
+    flavor = random.choice(flavors)
+    topping = random.choice(toppings)
+
+    slushie = {
+        "name": f"{flavor} of the day",
+        "flavor":flavor,
+        "topping":topping,
+        "color":color_map.get(flavor)
+    }
+
+    return render_template("slushie.html", s=slushie)
+
+@app.route("/vote/<int:id>/<action>")
+def vote(id, action):
+    slushie = slushies[id]
+
+    if action == "like":
+        slushies[id]["likes"] += 1
+    elif action == "dislike":
+        slushies[id]["dislikes"] += 1
+    
+    return redirect(f"/slushie/{id}")
+
 
 
 
