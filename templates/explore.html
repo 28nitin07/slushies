@@ -1,7 +1,23 @@
-<h1>Explore Slushies</h1>
+{% extends "base.html" %}
 
-{% for s in slushies %}
-   <div>
-    <a href="/slushie/{{ s.id }}">{{ s.name }}</a>
+{% block content %}
+<section>
+   <h1>Explore Slushies</h1>
+   <p class="muted">Browse every creation in the gallery.</p>
+
+   {% if slushies %}
+   <div class="card-grid">
+      {% for s in slushies %}
+      <article class="slushie-card" style="--card-color: {{ color_map.get(s.flavor, '#9ca3af') }}">
+         <h3>{{ s.name }}</h3>
+         <p>{{ s.flavor }} + {{ s.topping }}</p>
+         <p class="votes">👍 {{ s.likes }} | 👎 {{ s.dislikes }}</p>
+         <a class="button small" href="{{ url_for('view_slushie', slushie_id=s.id) }}">View Details</a>
+      </article>
+      {% endfor %}
    </div>
-{% endfor %}
+   {% else %}
+   <p class="muted">No slushies created yet.</p>
+   {% endif %}
+</section>
+{% endblock %}

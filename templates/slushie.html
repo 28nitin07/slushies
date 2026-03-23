@@ -1,13 +1,26 @@
-<div style="background: {{ s.color }}; padding: 20px">
-    <h1>{{ s.name }}</h1>
-    <p>{{ s.flavor }} + {{ s.topping }}</p>
+{% extends "base.html" %}
 
-    {% if s.id is defined%}
-        <a href="/vote/{{ s.id }}/like"> Like {{ s.likes }}> </a>
-        <a href="/vote/{{ s.id}}/dislike"> Dislike {{ s.dislikes }} </a>
+{% block content %}
+<article class="detail-card" style="--card-color: {{ color_map.get(slushie.flavor, '#9ca3af') }}">
+    <p class="eyebrow">Slushie Profile</p>
+    <h1>{{ slushie.name }}</h1>
+    <p class="flavor-line">{{ slushie.flavor }} + {{ slushie.topping }}</p>
+
+    {% if not preview_mode %}
+    <p class="votes">👍 {{ slushie.likes }} | 👎 {{ slushie.dislikes }}</p>
+
+    <div class="action-row">
+        <a class="button small" href="{{ url_for('vote', slushie_id=slushie.id, action='like') }}">Like</a>
+        <a class="button small" href="{{ url_for('vote', slushie_id=slushie.id, action='dislike') }}">Dislike</a>
+        <a class="button ghost small" href="{{ url_for('edit_slushie', slushie_id=slushie.id) }}">Edit</a>
+        <form method="POST" action="{{ url_for('delete_slushie', slushie_id=slushie.id) }}" onsubmit="return confirm('Delete this slushie?');">
+            <button class="button danger small" type="submit">Delete</button>
+        </form>
+    </div>
+    {% else %}
+    <p class="muted">Preview mode: this mix is not saved yet.</p>
     {% endif %}
 
-    <button onclick="navigator.clipboard.writeText(window.location.href)">
-        Copy Link
-    </button>
-</div>
+    <button class="button ghost" onclick="navigator.clipboard.writeText(window.location.href)">Copy Link</button>
+</article>
+{% endblock %}

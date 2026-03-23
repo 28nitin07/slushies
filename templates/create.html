@@ -1,15 +1,36 @@
-<form method="POST">
-    <select name="flavor">
-        {% for f in flavors %}
-            <option value="{{ f }}">{{ f }}</option>
-        {% endfor %}
-    </select>
+{% extends "base.html" %}
 
-    <select name="topping">
-        {% for t in toppings %}
-            <option value="{{ t }}">{{ t }}</option>
-        {% endfor %}
-    </select>
+{% block content %}
+<section class="form-section">
+    <h1>{% if edit_mode %}Edit{% else %}Create{% endif %} Slushie</h1>
+    <p class="muted">Pick a flavor and topping. Add a custom name or let the lab generate one.</p>
 
-    <button type="submit">Create Slushie</button>
-</form>
+    <form method="POST" class="slushie-form">
+        <label for="name">Name</label>
+        <input
+            id="name"
+            name="name"
+            placeholder="Optional: Mango Meteor"
+            value="{{ slushie.name if slushie else '' }}"
+        />
+
+        <label for="flavor">Flavor</label>
+        <select id="flavor" name="flavor" required>
+            {% for f in flavors %}
+            <option value="{{ f }}" {% if slushie and slushie.flavor == f %}selected{% endif %}>{{ f }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="topping">Topping</label>
+        <select id="topping" name="topping" required>
+            {% for t in toppings %}
+            <option value="{{ t }}" {% if slushie and slushie.topping == t %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+        </select>
+
+        <button class="button primary" type="submit">
+            {% if edit_mode %}Save Changes{% else %}Create Slushie{% endif %}
+        </button>
+    </form>
+</section>
+{% endblock %}

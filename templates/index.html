@@ -1,9 +1,48 @@
-<script src="https://cdn.tailwindcss.com"></script>
+{% extends "base.html" %}
 
-<h1 class="text-3x1">Slushie Lab</h1>
-<p>Total slushies: {{ total }}</p>
+{% block content %}
+<section class="hero">
+	<p class="eyebrow">Flavor Studio</p>
+	<h1>Build wild slushie combos and collect fan votes.</h1>
+	<p class="hero-copy">
+		Create your own blends, edit recipes, and track likes and dislikes in real
+		time.
+	</p>
+	<div class="hero-cta">
+		<a class="button primary" href="{{ url_for('create') }}">Create A Slushie</a>
+		<a class="button ghost" href="{{ url_for('explore') }}">Explore Gallery</a>
+	</div>
+</section>
 
-<a href="/create">Create</a>
-<a href="/explore">Explore</a>
-<a href="/roulette">Roulette</a>
-<a href="/today">Today's Slushie</a>
+<section class="stats-grid">
+	<article class="stat-card">
+		<p>Total Slushies</p>
+		<h2>{{ total }}</h2>
+	</article>
+	<article class="stat-card">
+		<p>Quick Pick</p>
+		<h2><a href="{{ url_for('roulette') }}">Roulette Mix</a></h2>
+	</article>
+	<article class="stat-card">
+		<p>Daily Flavor</p>
+		<h2><a href="{{ url_for('today') }}">Today Special</a></h2>
+	</article>
+</section>
+
+<section>
+	<h3 class="section-title">Latest Creations</h3>
+	{% if newest %}
+	<div class="card-grid">
+		{% for s in newest %}
+		<article class="slushie-card" style="--card-color: {{ color_map.get(s.flavor, '#9ca3af') }}">
+			<h4>{{ s.name }}</h4>
+			<p>{{ s.flavor }} + {{ s.topping }}</p>
+			<a class="button small" href="{{ url_for('view_slushie', slushie_id=s.id) }}">Open</a>
+		</article>
+		{% endfor %}
+	</div>
+	{% else %}
+	<p class="muted">No slushies yet. Create the first one.</p>
+	{% endif %}
+</section>
+{% endblock %}
