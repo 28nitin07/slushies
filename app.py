@@ -54,5 +54,19 @@ def view_slushie(id):
     slushie = slushies[id]
     return render_template("slushie.html", slushie=slushie)
 
+@app.route("/roulette")
+def roulette():
+    flavor = random.choice(flavors)
+    topping = random.choice(toppings)
+
+    slushie = {
+        "name": f"{flavor} Chaos",
+        "flavor": flavor,
+        "topping": topping,
+        "color": color_map.get(flavor)
+    }
+
+    return render_template("slushie.html", s=slushie)
+
 
 
