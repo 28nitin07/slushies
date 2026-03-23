@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>{% block title %}Flask{% endblock %}</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    </head>
-    <body>
-        <div>{% block content %}{% endblock %}</div>
-    </body>
-</html>
+<form method="POST">
+    <select name="flavor">
+        {% for f in flavors %}
+            <option value="{{ f }}">{{ f }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="topping">
+        {% for t in toppings %}
+            <option value="{{ t }}">{{ t }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Create Slushie</button>
+</form>

@@ -1,0 +1,13 @@
+<div style="background: {{ s.color }}; padding: 20px">
+    <h1>{{ s.name }}</h1>
+    <p>{{ s.flavor }} + {{ s.topping }}</p>
+
+    {% if s.id is defined%}
+        <a href="/vote/{{ s.id }}/like"> Like {{ s.likes }}> </a>
+        <a href="/vote/{{ s.id}}/dislike"> Dislike {{ s.dislikes }} </a>
+    {% endif %}
+
+    <button onclick="navigator.clipboard.writeText(window.location.href)">
+        Copy Link
+    </button>
+</div>

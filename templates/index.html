@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+<script src="https://cdn.tailwindcss.com"></script>
 
-{% block title %}
-Hello...
-{% endblock %}
+<h1 class="text-3x1">Slushie Lab</h1>
+<p>Total slushies: {{ total }}</p>
 
-{% block content %}
-<p>hi there, my name is {{ user_name }}</p>
-{% endblock %}
+<a href="/create">Create</a>
+<a href="/explore">Explore</a>
+<a href="/roulette">Roulette</a>
+<a href="/today">Today's Slushie</a>
