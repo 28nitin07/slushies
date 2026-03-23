@@ -1,7 +1,6 @@
 [project]
 name = "slushies"
 version = "0.1.0"
-dependencies = {
+dependencies = [
     "flask"
-}
-
+]
