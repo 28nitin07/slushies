@@ -118,7 +118,12 @@ def create():
         flash("Slushie created.", "success")
         return redirect(url_for("view_slushie", slushie_id=cursor.lastrowid))
 
-    return render_template("create.html", flavors=FLAVORS, toppings=TOPPINGS)
+    return render_template(
+        "create.html",
+        flavors=FLAVORS,
+        toppings=TOPPINGS,
+        color_map=COLOR_MAP,
+    )
 
 
 @app.route("/explore")
@@ -159,8 +164,36 @@ def edit_slushie(slushie_id: int):
         "create.html",
         flavors=FLAVORS,
         toppings=TOPPINGS,
+        color_map=COLOR_MAP,
         slushie=slushie,
         edit_mode=True,
+    )
+
+
+@app.route("/visualizer")
+def visualizer():
+    flavor = request.args.get("flavor", FLAVORS[0]).strip()
+    topping = request.args.get("topping", TOPPINGS[0]).strip()
+    name = request.args.get("name", "Live Slushie Preview").strip()
+
+    if flavor not in FLAVORS:
+        flavor = FLAVORS[0]
+    if topping not in TOPPINGS:
+        topping = TOPPINGS[0]
+    if not name:
+        name = "Live Slushie Preview"
+
+    slushie = {
+        "flavor": flavor,
+        "topping": topping,
+    }
+
+    return render_template(
+        "visualizer.html",
+        slushie=slushie,
+        flavors=FLAVORS,
+        toppings=TOPPINGS,
+        color_map=COLOR_MAP,
     )
 
 

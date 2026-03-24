@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="visualizer-page">
+  <article class="detail-card">
+    <p class="eyebrow">Slushie Visualizer</p>
+    <h1 id="page-viz-name">{{ slushie.name }}</h1>
+    <p class="muted" id="page-viz-meta">{{ slushie.flavor }} + {{ slushie.topping }}</p>
+
+    <div class="cup large">
+      <div class="cup-lid"></div>
+      <div class="cup-fill" id="page-cup-fill"></div>
+      <div class="cup-label" id="page-cup-label">{{ slushie.topping }}</div>
+    </div>
+  </article>
+
+  <article class="form-section">
+    <h2>Customize Preview</h2>
+    <form class="slushie-form" id="visualizer-form" method="GET" action="{{ url_for('visualizer') }}">
+      <label for="viz-name">Name</label>
+      <input id="viz-name" name="name" value="{{ slushie.name }}" />
+
+      <label for="viz-flavor">Flavor</label>
+      <select id="viz-flavor" name="flavor" required>
+        {% for f in flavors %}
+        <option value="{{ f }}" {% if slushie.flavor == f %}selected{% endif %}>{{ f }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="viz-topping">Topping</label>
+      <select id="viz-topping" name="topping" required>
+        {% for t in toppings %}
+        <option value="{{ t }}" {% if slushie.topping == t %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+
+      <div class="action-row">
+        <button class="button primary" type="submit">Refresh View</button>
+        <a class="button ghost" href="{{ url_for('create') }}">Create This Mix</a>
+      </div>
+    </form>
+  </article>
+</section>
+
+<script>
+  const nameInput = document.getElementById("viz-name");
+  const flavorInput = document.getElementById("viz-flavor");
+  const toppingInput = document.getElementById("viz-topping");
+
+  const pageVizName = document.getElementById("page-viz-name");
+  const pageVizMeta = document.getElementById("page-viz-meta");
+  const pageCupFill = document.getElementById("page-cup-fill");
+  const pageCupLabel = document.getElementById("page-cup-label");
+
+  const colorMap = {
+    "Mango": "#f59e0b",
+    "Cola": "#7c2d12",
+    "Blue Raspberry": "#1d4ed8",
+    "Strawberry": "#dc2626",
+    "Grape": "#6d28d9",
+    "Lemon": "#ca8a04",
+    "Watermelon": "#16a34a",
+  };
+
+  function syncPreview() {
+    const name = (nameInput.value || "Live Slushie Preview").trim();
+    const flavor = flavorInput.value;
+    const topping = toppingInput.value;
+
+    pageVizName.textContent = name || "Live Slushie Preview";
+    pageVizMeta.textContent = `${flavor} + ${topping}`;
+    pageCupFill.style.backgroundColor = colorMap[flavor] || "#9ca3af";
+    pageCupLabel.textContent = topping;
+  }
+
+  [nameInput, flavorInput, toppingInput].forEach((el) => {
+    el.addEventListener("input", syncPreview);
+    el.addEventListener("change", syncPreview);
+  });
+
+  syncPreview();
+</script>
+{% endblock %}

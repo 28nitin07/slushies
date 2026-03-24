@@ -7,7 +7,7 @@
     <p class="flavor-line">{{ slushie.flavor }} + {{ slushie.topping }}</p>
 
     {% if not preview_mode %}
-    <p class="votes">👍 {{ slushie.likes }} | 👎 {{ slushie.dislikes }}</p>
+    <p class="votes">Likes {{ slushie.likes }} | Dislikes {{ slushie.dislikes }}</p>
 
     <div class="action-row">
         <a class="button small" href="{{ url_for('vote', slushie_id=slushie.id, action='like') }}">Like</a>

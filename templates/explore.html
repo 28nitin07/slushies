@@ -11,7 +11,7 @@
       <article class="slushie-card" style="--card-color: {{ color_map.get(s.flavor, '#9ca3af') }}">
          <h3>{{ s.name }}</h3>
          <p>{{ s.flavor }} + {{ s.topping }}</p>
-         <p class="votes">👍 {{ s.likes }} | 👎 {{ s.dislikes }}</p>
+         <p class="votes">Likes {{ s.likes }} | Dislikes {{ s.dislikes }}</p>
          <a class="button small" href="{{ url_for('view_slushie', slushie_id=s.id) }}">View Details</a>
       </article>
       {% endfor %}

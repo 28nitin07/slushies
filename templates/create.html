@@ -1,36 +1,99 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="form-section">
-    <h1>{% if edit_mode %}Edit{% else %}Create{% endif %} Slushie</h1>
-    <p class="muted">Pick a flavor and topping. Add a custom name or let the lab generate one.</p>
+<section class="form-layout">
+    <article class="form-section">
+        <h1>{% if edit_mode %}Edit{% else %}Create{% endif %} Slushie</h1>
+        <p class="muted">Pick a flavor and topping. Add a custom name or let the lab generate one.</p>
 
-    <form method="POST" class="slushie-form">
-        <label for="name">Name</label>
-        <input
-            id="name"
-            name="name"
-            placeholder="Optional: Mango Meteor"
-            value="{{ slushie.name if slushie else '' }}"
-        />
+        <form method="POST" class="slushie-form">
+            <label for="name">Name</label>
+            <input
+                id="name"
+                name="name"
+                placeholder="Optional: Mango Meteor"
+                value="{{ slushie.name if slushie else '' }}"
+            />
 
-        <label for="flavor">Flavor</label>
-        <select id="flavor" name="flavor" required>
-            {% for f in flavors %}
-            <option value="{{ f }}" {% if slushie and slushie.flavor == f %}selected{% endif %}>{{ f }}</option>
-            {% endfor %}
-        </select>
+            <label for="flavor">Flavor</label>
+            <select id="flavor" name="flavor" required>
+                {% for f in flavors %}
+                <option value="{{ f }}" {% if slushie and slushie.flavor == f %}selected{% endif %}>{{ f }}</option>
+                {% endfor %}
+            </select>
 
-        <label for="topping">Topping</label>
-        <select id="topping" name="topping" required>
-            {% for t in toppings %}
-            <option value="{{ t }}" {% if slushie and slushie.topping == t %}selected{% endif %}>{{ t }}</option>
-            {% endfor %}
-        </select>
+            <label for="topping">Topping</label>
+            <select id="topping" name="topping" required>
+                {% for t in toppings %}
+                <option value="{{ t }}" {% if slushie and slushie.topping == t %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+            </select>
 
-        <button class="button primary" type="submit">
-            {% if edit_mode %}Save Changes{% else %}Create Slushie{% endif %}
-        </button>
-    </form>
+            <button class="button primary" type="submit">
+                {% if edit_mode %}Save Changes{% else %}Create Slushie{% endif %}
+            </button>
+        </form>
+    </article>
+
+    <article class="visualizer-panel">
+        <p class="eyebrow">Live Visualizer</p>
+        <h2 id="viz-name">{{ slushie.name if slushie else 'Live Slushie Preview' }}</h2>
+        <p class="muted" id="viz-meta">{{ (slushie.flavor if slushie else flavors[0]) }} + {{ (slushie.topping if slushie else toppings[0]) }}</p>
+
+        <div class="cup">
+            <div class="cup-lid"></div>
+            <div class="cup-fill" id="cup-fill"></div>
+            <div class="cup-label" id="cup-label">{{ (slushie.topping if slushie else toppings[0]) }}</div>
+        </div>
+
+        <a class="button ghost small" id="open-visualizer" href="{{ url_for('visualizer') }}">Open Full Visualizer</a>
+    </article>
 </section>
+
+<script>
+    const nameInput = document.getElementById("name");
+    const flavorInput = document.getElementById("flavor");
+    const toppingInput = document.getElementById("topping");
+
+    const vizName = document.getElementById("viz-name");
+    const vizMeta = document.getElementById("viz-meta");
+    const cupFill = document.getElementById("cup-fill");
+    const cupLabel = document.getElementById("cup-label");
+    const openVisualizer = document.getElementById("open-visualizer");
+
+    const colorMap = {
+        "Mango": "#f59e0b",
+        "Cola": "#7c2d12",
+        "Blue Raspberry": "#1d4ed8",
+        "Strawberry": "#dc2626",
+        "Grape": "#6d28d9",
+        "Lemon": "#ca8a04",
+        "Watermelon": "#16a34a",
+    };
+
+    function updateVisualizer() {
+        const name = (nameInput.value || "Live Slushie Preview").trim();
+        const flavor = flavorInput.value;
+        const topping = toppingInput.value;
+
+        vizName.textContent = name || "Live Slushie Preview";
+        vizMeta.textContent = `${flavor} + ${topping}`;
+        cupFill.style.backgroundColor = colorMap[flavor] || "#9ca3af";
+        cupLabel.textContent = topping;
+
+        const params = new URLSearchParams({
+            name: vizName.textContent,
+            flavor,
+            topping,
+        });
+        openVisualizer.href = `{{ url_for('visualizer') }}?${params.toString()}`;
+    }
+
+    [nameInput, flavorInput, toppingInput].forEach((el) => {
+        el.addEventListener("input", updateVisualizer);
+        el.addEventListener("change", updateVisualizer);
+    });
+
+    updateVisualizer();
+</script>
 {% endblock %}
