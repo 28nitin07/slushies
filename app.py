@@ -184,6 +184,7 @@ def visualizer():
         name = "Live Slushie Preview"
 
     slushie = {
+        "name": name,
         "flavor": flavor,
         "topping": topping,
     }
