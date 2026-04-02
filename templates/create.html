@@ -3,8 +3,8 @@
 {% block content %}
 <section class="form-layout">
     <article class="form-section">
-        <h1>{% if edit_mode %}Edit{% else %}Create{% endif %} Slushie</h1>
-        <p class="muted">Pick a flavor and topping. Add a custom name or let the lab generate one.</p>
+        <h1>{% if edit_mode %}Edit{% else %}Create{% endif %} Capsule</h1>
+        <p class="muted">Pick a flavor mood snapshot. Add a custom name or let the app generate one.</p>
 
         <form method="POST" class="slushie-form">
             <label for="name">Name</label>
@@ -29,16 +29,33 @@
                 {% endfor %}
             </select>
 
+            <label for="mood">Mood</label>
+            <select id="mood" name="mood" required>
+                {% for m in moods %}
+                <option value="{{ m }}" {% if slushie and slushie.mood == m %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="note">Memory Note (optional)</label>
+            <textarea
+                id="note"
+                name="note"
+                placeholder="What made this slushie memorable today?"
+                maxlength="280"
+                rows="4"
+            >{{ slushie.note if slushie else '' }}</textarea>
+
             <button class="button primary" type="submit">
-                {% if edit_mode %}Save Changes{% else %}Create Slushie{% endif %}
+                {% if edit_mode %}Save Changes{% else %}Create Capsule{% endif %}
             </button>
         </form>
     </article>
 
     <article class="visualizer-panel">
         <p class="eyebrow">Live Visualizer</p>
-        <h2 id="viz-name">{{ slushie.name if slushie else 'Live Slushie Preview' }}</h2>
+        <h2 id="viz-name">{{ slushie.name if slushie else 'Live Capsule Preview' }}</h2>
         <p class="muted" id="viz-meta">{{ (slushie.flavor if slushie else flavors[0]) }} + {{ (slushie.topping if slushie else toppings[0]) }}</p>
+        <p class="mood-pill" id="viz-mood">Mood: {{ slushie.mood if slushie else moods[0] }}</p>
 
         <div class="cup">
             <div class="cup-lid"></div>
@@ -60,6 +77,8 @@
     const cupFill = document.getElementById("cup-fill");
     const cupLabel = document.getElementById("cup-label");
     const openVisualizer = document.getElementById("open-visualizer");
+    const moodInput = document.getElementById("mood");
+    const vizMood = document.getElementById("viz-mood");
 
     const colorMap = {
         "Mango": "#f59e0b",
@@ -72,12 +91,14 @@
     };
 
     function updateVisualizer() {
-        const name = (nameInput.value || "Live Slushie Preview").trim();
+        const name = (nameInput.value || "Live Capsule Preview").trim();
         const flavor = flavorInput.value;
         const topping = toppingInput.value;
+        const mood = moodInput.value;
 
-        vizName.textContent = name || "Live Slushie Preview";
+        vizName.textContent = name || "Live Capsule Preview";
         vizMeta.textContent = `${flavor} + ${topping}`;
+        vizMood.textContent = `Mood: ${mood}`;
         cupFill.style.backgroundColor = colorMap[flavor] || "#9ca3af";
         cupLabel.textContent = topping;
 
@@ -89,7 +110,7 @@
         openVisualizer.href = `{{ url_for('visualizer') }}?${params.toString()}`;
     }
 
-    [nameInput, flavorInput, toppingInput].forEach((el) => {
+    [nameInput, flavorInput, toppingInput, moodInput].forEach((el) => {
         el.addEventListener("input", updateVisualizer);
         el.addEventListener("change", updateVisualizer);
     });

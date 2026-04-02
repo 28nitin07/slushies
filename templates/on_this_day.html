@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+  <h1>On This Day</h1>
+  <p class="muted">A memory replay from this calendar date.</p>
+
+  {% if chosen %}
+  <article class="detail-card" style="--card-color: {{ color_map.get(chosen.flavor, '#9ca3af') }}">
+    <p class="eyebrow">Replay Capsule</p>
+    <h2>{{ chosen.name }}</h2>
+    <p class="flavor-line">{{ chosen.flavor }} + {{ chosen.topping }}</p>
+    <p class="mood-pill">Mood: {{ chosen.mood }}</p>
+    {% if chosen.note %}
+    <p class="note-block">{{ chosen.note }}</p>
+    {% endif %}
+    <p class="muted">Saved {{ chosen.created_at[:10] }}</p>
+    <p class="muted">{{ total_matches }} capsule(s) match today's month-day.</p>
+    <a class="button small" href="{{ url_for('view_slushie', slushie_id=chosen.id) }}">Open Capsule</a>
+  </article>
+  {% else %}
+  <article class="detail-card">
+    <p class="eyebrow">No Replay Yet</p>
+    <h2>No capsule from this date yet.</h2>
+    <p class="muted">Create one today and this page will surface it in future years.</p>
+    <a class="button primary" href="{{ url_for('create') }}">Create Capsule</a>
+  </article>
+  {% endif %}
+</section>
+{% endblock %}

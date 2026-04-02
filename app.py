@@ -23,6 +23,8 @@ FLAVORS = [
 
 TOPPINGS = ["Boba", "Jelly", "Ice Cream", "Whipped Cream", "Sprinkles"]
 
+MOODS = ["Chill", "Hyped", "Nostalgic", "Focused", "Chaotic"]
+
 COLOR_MAP = {
     "Mango": "#f59e0b",
     "Cola": "#7c2d12",
@@ -58,12 +60,23 @@ def init_db() -> None:
             name TEXT NOT NULL,
             flavor TEXT NOT NULL,
             topping TEXT NOT NULL,
+            mood TEXT NOT NULL DEFAULT 'Chill',
+            note TEXT NOT NULL DEFAULT '',
             likes INTEGER NOT NULL DEFAULT 0,
             dislikes INTEGER NOT NULL DEFAULT 0,
             created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
         """
     )
+
+    existing_columns = {
+        row["name"] for row in db.execute("PRAGMA table_info(slushies)").fetchall()
+    }
+    if "mood" not in existing_columns:
+        db.execute("ALTER TABLE slushies ADD COLUMN mood TEXT NOT NULL DEFAULT 'Chill'")
+    if "note" not in existing_columns:
+        db.execute("ALTER TABLE slushies ADD COLUMN note TEXT NOT NULL DEFAULT ''")
+
     db.commit()
 
 
@@ -92,7 +105,16 @@ def index():
     newest = db.execute(
         "SELECT * FROM slushies ORDER BY id DESC LIMIT 3"
     ).fetchall()
-    return render_template("index.html", total=total, newest=newest, color_map=COLOR_MAP)
+    day_seed = datetime.date.today().isoformat()
+    rng = random.Random(day_seed)
+    today_prompt = rng.choice(MOODS)
+    return render_template(
+        "index.html",
+        total=total,
+        newest=newest,
+        color_map=COLOR_MAP,
+        today_prompt=today_prompt,
+    )
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -101,9 +123,14 @@ def create():
         flavor = request.form.get("flavor", "").strip()
         topping = request.form.get("topping", "").strip()
         name = request.form.get("name", "").strip()
+        mood = request.form.get("mood", "").strip()
+        note = request.form.get("note", "").strip()
 
-        if flavor not in FLAVORS or topping not in TOPPINGS:
-            flash("Choose a valid flavor and topping.", "error")
+        if flavor not in FLAVORS or topping not in TOPPINGS or mood not in MOODS:
+            flash("Choose valid flavor, topping, and mood values.", "error")
+            return redirect(url_for("create"))
+        if len(note) > 280:
+            flash("Memory note must be 280 characters or fewer.", "error")
             return redirect(url_for("create"))
 
         if not name:
@@ -111,17 +138,18 @@ def create():
 
         db = get_db()
         cursor = db.execute(
-            "INSERT INTO slushies (name, flavor, topping) VALUES (?, ?, ?)",
-            (name, flavor, topping),
+            "INSERT INTO slushies (name, flavor, topping, mood, note) VALUES (?, ?, ?, ?, ?)",
+            (name, flavor, topping, mood, note),
         )
         db.commit()
-        flash("Slushie created.", "success")
+        flash("Capsule created.", "success")
         return redirect(url_for("view_slushie", slushie_id=cursor.lastrowid))
 
     return render_template(
         "create.html",
         flavors=FLAVORS,
         toppings=TOPPINGS,
+        moods=MOODS,
         color_map=COLOR_MAP,
     )
 
@@ -146,24 +174,35 @@ def edit_slushie(slushie_id: int):
         name = request.form.get("name", "").strip()
         flavor = request.form.get("flavor", "").strip()
         topping = request.form.get("topping", "").strip()
+        mood = request.form.get("mood", "").strip()
+        note = request.form.get("note", "").strip()
 
-        if not name or flavor not in FLAVORS or topping not in TOPPINGS:
+        if (
+            not name
+            or flavor not in FLAVORS
+            or topping not in TOPPINGS
+            or mood not in MOODS
+        ):
             flash("Provide valid values for all fields.", "error")
+            return redirect(url_for("edit_slushie", slushie_id=slushie_id))
+        if len(note) > 280:
+            flash("Memory note must be 280 characters or fewer.", "error")
             return redirect(url_for("edit_slushie", slushie_id=slushie_id))
 
         db = get_db()
         db.execute(
-            "UPDATE slushies SET name = ?, flavor = ?, topping = ? WHERE id = ?",
-            (name, flavor, topping, slushie_id),
+            "UPDATE slushies SET name = ?, flavor = ?, topping = ?, mood = ?, note = ? WHERE id = ?",
+            (name, flavor, topping, mood, note, slushie_id),
         )
         db.commit()
-        flash("Slushie updated.", "success")
+        flash("Capsule updated.", "success")
         return redirect(url_for("view_slushie", slushie_id=slushie_id))
 
     return render_template(
         "create.html",
         flavors=FLAVORS,
         toppings=TOPPINGS,
+        moods=MOODS,
         color_map=COLOR_MAP,
         slushie=slushie,
         edit_mode=True,
@@ -204,8 +243,26 @@ def delete_slushie(slushie_id: int):
     db = get_db()
     db.execute("DELETE FROM slushies WHERE id = ?", (slushie_id,))
     db.commit()
-    flash("Slushie deleted.", "success")
+    flash("Capsule deleted.", "success")
     return redirect(url_for("explore"))
+
+
+@app.route("/on-this-day")
+def on_this_day():
+    db = get_db()
+    date_key = datetime.date.today().strftime("%m-%d")
+    matches = db.execute(
+        "SELECT * FROM slushies WHERE strftime('%m-%d', created_at) = ? ORDER BY id DESC",
+        (date_key,),
+    ).fetchall()
+
+    chosen = random.choice(matches) if matches else None
+    return render_template(
+        "on_this_day.html",
+        chosen=chosen,
+        total_matches=len(matches),
+        color_map=COLOR_MAP,
+    )
 
 
 @app.route("/roulette")
@@ -229,10 +286,10 @@ def roulette():
 @app.route("/today")
 def today():
     seed = str(datetime.date.today())
-    random.seed(seed)
+    rng = random.Random(seed)
 
-    flavor = random.choice(FLAVORS)
-    topping = random.choice(TOPPINGS)
+    flavor = rng.choice(FLAVORS)
+    topping = rng.choice(TOPPINGS)
 
     slushie = {
         "id": None,

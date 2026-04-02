@@ -2,8 +2,8 @@
 
 {% block content %}
 <section>
-   <h1>Explore Slushies</h1>
-   <p class="muted">Browse every creation in the gallery.</p>
+   <h1>Timeline Explore</h1>
+   <p class="muted">Browse every capsule and revisit flavor memories in reverse chronology.</p>
 
    {% if slushies %}
    <div class="card-grid">
@@ -11,13 +11,18 @@
       <article class="slushie-card" style="--card-color: {{ color_map.get(s.flavor, '#9ca3af') }}">
          <h3>{{ s.name }}</h3>
          <p>{{ s.flavor }} + {{ s.topping }}</p>
+         <p class="mood-pill">Mood: {{ s.mood }}</p>
+         {% if s.note %}
+         <p class="muted">"{{ s.note }}"</p>
+         {% endif %}
+         <p class="muted">Saved {{ s.created_at[:10] }}</p>
          <p class="votes">Likes {{ s.likes }} | Dislikes {{ s.dislikes }}</p>
          <a class="button small" href="{{ url_for('view_slushie', slushie_id=s.id) }}">View Details</a>
       </article>
       {% endfor %}
    </div>
    {% else %}
-   <p class="muted">No slushies created yet.</p>
+   <p class="muted">No capsules created yet.</p>
    {% endif %}
 </section>
 {% endblock %}

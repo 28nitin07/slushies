@@ -1,40 +1,60 @@
-# Slushie Lab
+# Slushie Time Capsule
 
-Slushie Lab is a Flask web app where you can create, explore, edit, vote on, and delete custom slushie recipes.
+Slushie Time Capsule is a Flask web app where each slushie is saved like a memory entry. Users capture flavor + topping + mood + note, browse a timeline of past capsules, and revisit entries from the same calendar date.
 
-## Feature-by-Feature Implementation
+## Routes and Features
 
-### Feature 1: Core routes and app flow
+- `/` Home dashboard with total capsules, mood prompt, and latest entries
+- `/create` Create a new capsule entry
+- `/explore` Timeline view of all saved capsules
+- `/slushie/<id>` Capsule detail page with voting
+- `/slushie/<id>/edit` Edit a saved capsule
+- `/slushie/<id>/delete` Delete a capsule
+- `/on-this-day` Replay an older capsule from the same month/day
+- `/roulette`, `/today`, `/visualizer` Extra interactive pages
 
-- Home dashboard route: `/`
-- Create route: `/create`
-- Explore route: `/explore`
-- Slushie details route: `/slushie/<id>`
-- Bonus routes: `/roulette`, `/today`
+## Higher Reward Criterion Implemented
 
-### Feature 2: Basic CRUD with SQLite (reward criteria)
+This project implements **basic CRUD with SQLite**:
 
-- **Create** slushies with custom or auto-generated names
-- **Read** all slushies in gallery and each detail page
-- **Update** existing slushies via `/slushie/<id>/edit`
-- **Delete** slushies via `/slushie/<id>/delete`
+- Create: add capsule entries with name, flavor, topping, mood, and note
+- Read: list capsules in timeline and open details
+- Update: edit capsule fields
+- Delete: remove capsules from the database
 
-### Feature 3: Voting interactions
+## YSWS Requirement Checklist
 
-- Like and dislike actions on saved slushies
-- Vote counters stored persistently in SQLite
+- Flask app with at least 3 routes: complete (9+ routes)
+- Unique, functional, and styled project: complete (time-capsule concept + custom CSS)
+- Hourly GitHub commits while coding: complete during build session
+- README with project details and screenshots: complete (add images below)
+- Dependencies listed in requirements.txt: complete
+- Higher rewards item: complete via SQLite CRUD
 
-### Feature 4: Styling and responsive UI
+## Screenshots
 
-- Shared layout with navigation
-- Custom design system in `static/styles.css`
-- Mobile-friendly cards/forms/navigation
+Add screenshots from your run here:
+
+1. Home dashboard (`/`)
+2. Create capsule form (`/create`)
+3. Timeline page (`/explore`)
+4. Capsule detail page (`/slushie/<id>`)
+5. On This Day replay (`/on-this-day`)
+
+## 2-Hour Hackatime Build Log Template
+
+Use this section while coding to show clear progress:
+
+- 00:00-00:30: Reframed app copy and navigation to Time Capsule theme
+- 00:30-01:00: Added mood + note fields and database support
+- 01:00-01:30: Added On This Day route and timeline polish
+- 01:30-02:00: Final UI cleanup, README checklist, screenshots
 
 ## Tech Stack
 
 - Python 3
 - Flask
-- SQLite (built into Python)
+- SQLite
 - HTML + CSS
 
 ## Installation
@@ -44,31 +64,4 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Then open: <http://127.0.0.1:5000>
-
-## Dependencies
-
-- Flask==3.1.0
-
-## Suggested Screenshots for Submission
-
-Add screenshots here after running the app:
-
-1. Home page dashboard
-2. Create form page
-3. Explore gallery page
-4. Slushie detail page with vote buttons
-5. Edit flow and delete flow
-
-## Project Notes for YSWS Checklist
-
-- At least 3 routes: complete
-- Unique and styled web app: complete
-- Dependencies listed in requirements.txt: complete
-- README includes project description: complete
-- Higher reward criterion implemented: **Basic CRUD with SQLite**
-
-Remember to:
-
-- Commit at least once per hour while coding
-- Log your project time on Hackatime
+Open: <http://127.0.0.1:5000>

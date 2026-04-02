@@ -3,7 +3,7 @@
 {% block content %}
 <section class="visualizer-page">
   <article class="detail-card">
-    <p class="eyebrow">Slushie Visualizer</p>
+    <p class="eyebrow">Capsule Visualizer</p>
     <h1 id="page-viz-name">{{ slushie.name }}</h1>
     <p class="muted" id="page-viz-meta">{{ slushie.flavor }} + {{ slushie.topping }}</p>
 
@@ -36,7 +36,7 @@
 
       <div class="action-row">
         <button class="button primary" type="submit">Refresh View</button>
-        <a class="button ghost" href="{{ url_for('create') }}">Create This Mix</a>
+        <a class="button ghost" href="{{ url_for('create') }}">Create This Capsule</a>
       </div>
     </form>
   </article>
@@ -63,11 +63,11 @@
   };
 
   function syncPreview() {
-    const name = (nameInput.value || "Live Slushie Preview").trim();
+    const name = (nameInput.value || "Live Capsule Preview").trim();
     const flavor = flavorInput.value;
     const topping = toppingInput.value;
 
-    pageVizName.textContent = name || "Live Slushie Preview";
+    pageVizName.textContent = name || "Live Capsule Preview";
     pageVizMeta.textContent = `${flavor} + ${topping}`;
     pageCupFill.style.backgroundColor = colorMap[flavor] || "#9ca3af";
     pageCupLabel.textContent = topping;

@@ -2,9 +2,16 @@
 
 {% block content %}
 <article class="detail-card" style="--card-color: {{ color_map.get(slushie.flavor, '#9ca3af') }}">
-    <p class="eyebrow">Slushie Profile</p>
+    <p class="eyebrow">Capsule Profile</p>
     <h1>{{ slushie.name }}</h1>
     <p class="flavor-line">{{ slushie.flavor }} + {{ slushie.topping }}</p>
+    <p class="mood-pill">Mood: {{ slushie.mood or 'Chill' }}</p>
+    {% if slushie.note %}
+    <p class="note-block">{{ slushie.note }}</p>
+    {% endif %}
+    {% if slushie.created_at %}
+    <p class="muted">Saved {{ slushie.created_at[:10] }}</p>
+    {% endif %}
 
     {% if not preview_mode %}
     <p class="votes">Likes {{ slushie.likes }} | Dislikes {{ slushie.dislikes }}</p>
@@ -18,7 +25,7 @@
         </form>
     </div>
     {% else %}
-    <p class="muted">Preview mode: this mix is not saved yet.</p>
+    <p class="muted">Preview mode: this capsule is not saved yet.</p>
     {% endif %}
 
     <button class="button ghost" onclick="navigator.clipboard.writeText(window.location.href)">Copy Link</button>

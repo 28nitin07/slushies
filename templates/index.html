@@ -2,47 +2,53 @@
 
 {% block content %}
 <section class="hero">
-	<p class="eyebrow">Flavor Studio</p>
-	<h1>Build wild slushie combos and collect fan votes.</h1>
+	<p class="eyebrow">Memory Journal</p>
+	<h1>Capture your flavor mood and store it in the time capsule.</h1>
 	<p class="hero-copy">
-		Create your own blends, edit recipes, and track likes and dislikes in real
-		time.
+		Every entry is a snapshot of your day: flavor, topping, mood, and note.
+		Revisit old capsules and see what the community resonates with.
 	</p>
 	<div class="hero-cta">
-		<a class="button primary" href="{{ url_for('create') }}">Create A Slushie</a>
-		<a class="button ghost" href="{{ url_for('explore') }}">Explore Gallery</a>
+		<a class="button primary" href="{{ url_for('create') }}">Create Capsule</a>
+		<a class="button ghost" href="{{ url_for('explore') }}">Open Timeline</a>
 	</div>
 </section>
 
 <section class="stats-grid">
 	<article class="stat-card">
-		<p>Total Slushies</p>
+		<p>Total Capsules</p>
 		<h2>{{ total }}</h2>
+	</article>
+	<article class="stat-card">
+		<p>Mood Prompt</p>
+		<h2>{{ today_prompt }}</h2>
+	</article>
+	<article class="stat-card">
+		<p>Memory Replay</p>
+		<h2><a href="{{ url_for('on_this_day') }}">On This Day</a></h2>
 	</article>
 	<article class="stat-card">
 		<p>Quick Pick</p>
 		<h2><a href="{{ url_for('roulette') }}">Roulette Mix</a></h2>
 	</article>
-	<article class="stat-card">
-		<p>Daily Flavor</p>
-		<h2><a href="{{ url_for('today') }}">Today Special</a></h2>
-	</article>
 </section>
 
 <section>
-	<h3 class="section-title">Latest Creations</h3>
+	<h3 class="section-title">Latest Capsules</h3>
 	{% if newest %}
 	<div class="card-grid">
 		{% for s in newest %}
 		<article class="slushie-card" style="--card-color: {{ color_map.get(s.flavor, '#9ca3af') }}">
 			<h4>{{ s.name }}</h4>
 			<p>{{ s.flavor }} + {{ s.topping }}</p>
+			<p class="mood-pill">Mood: {{ s.mood }}</p>
+			<p class="muted">{{ s.created_at[:10] }}</p>
 			<a class="button small" href="{{ url_for('view_slushie', slushie_id=s.id) }}">Open</a>
 		</article>
 		{% endfor %}
 	</div>
 	{% else %}
-	<p class="muted">No slushies yet. Create the first one.</p>
+	<p class="muted">No capsules yet. Create your first memory.</p>
 	{% endif %}
 </section>
 {% endblock %}

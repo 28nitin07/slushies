@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Slushie Lab</title>
+    <title>Slushie Time Capsule</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,13 +17,14 @@
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="{{ url_for('index') }}">Slushie Lab</a>
+      <a class="brand" href="{{ url_for('index') }}">Slushie Time Capsule</a>
       <nav class="site-nav">
-        <a href="{{ url_for('create') }}">Create</a>
+        <a href="{{ url_for('create') }}">Create Capsule</a>
         <a href="{{ url_for('visualizer') }}">Visualizer</a>
-        <a href="{{ url_for('explore') }}">Explore</a>
+        <a href="{{ url_for('explore') }}">Timeline</a>
+        <a href="{{ url_for('on_this_day') }}">On This Day</a>
         <a href="{{ url_for('roulette') }}">Roulette</a>
-        <a href="{{ url_for('today') }}">Today</a>
+        <a href="{{ url_for('today') }}">Daily Mix</a>
       </nav>
     </header>
 
